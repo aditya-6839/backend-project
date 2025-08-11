@@ -16,4 +16,11 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(express.static("public"))
 // Reads cookies from requests and lets you send cookies in responses
 app.use(cookieParser())
+
+// Routes
+import userRouter from "./routes/user.routes.js";
+
+// Routes declaration
+// https://localhost:8000/api/v1/users/register
+app.use("/api/v1/users", userRouter)
 export { app }
