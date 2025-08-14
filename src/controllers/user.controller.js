@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import jwt from "jsonwebtoken";
 
+
 const generateAccessAndReferenceTokens = async (userId) => {
     try {
         const user = await User.findById(userId)
@@ -87,8 +88,9 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!createdUser) {
         throw new ApiError(500, "Something went wrong while registering the user")
     }
-    // return res
-    return res.status(201).json(
+    // return res'
+    return res.status(201)
+    .json(
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
 
@@ -125,13 +127,15 @@ const loginUser = asyncHandler(async (req, res) => {
     }
     // access and refresh token
     const { accessToken, refreshToken } = await generateAccessAndReferenceTokens(user._id)
+    console.log("Generated Access Token:", accessToken);
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken") // remove access of password and refreshTokens
 
     // send cookie
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "strict",
     }
     return res
         .status(200)
